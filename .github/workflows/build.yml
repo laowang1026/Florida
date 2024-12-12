@@ -146,7 +146,8 @@ jobs:
         echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
         
         wget https://github.com/frida/frida/archive/refs/tags/14.2.7.zip
-        unzip 14.2.7.zip -d frida
+        unzip 14.2.7.zip
+        mv frida-14.2.7 frida
         cd frida
         for path in ../patches/*
         do
