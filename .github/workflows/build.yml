@@ -149,7 +149,7 @@ jobs:
         cd frida
         git fetch --tags
         git tag
-        git checkout v14.2.7
+        git checkout 14.2.7
         for path in ../patches/*
         do
           name=$(basename $path)
