@@ -145,16 +145,14 @@ jobs:
         export ANDROID_NDK_ROOT=${{ steps.setup-ndk.outputs.ndk-path }}
         echo "ANDROID_NDK_ROOT=$ANDROID_NDK_ROOT"
         
-        wget https://github.com/frida/frida/archive/refs/tags/14.2.7.zip
-        unzip 14.2.7.zip
-        mv frida-14.2.7 frida
+        git clone --recurse-submodules https://github.com/frida/frida
         cd frida
         for path in ../patches/*
         do
           name=$(basename $path)
           real=$(realpath $path)
-          echo "Apply patches in $real to frida/$name"
-          cd $name
+          echo "Apply patches in $real to frida/subprojects/$name"
+          cd subprojects/$name
           git am ../../../patches/$name/*.patch
           cd ../..
           echo $i
@@ -207,25 +205,25 @@ jobs:
       shell: bash
       run: |
         
-        gzip build-android-arm/frida-core/server/frida-server
-        gzip build-android-arm64/frida-core/server/frida-server
-        gzip build-android-x86/frida-core/server/frida-server
-        gzip build-android-x86_64/frida-core/server/frida-server
+        gzip build-android-arm/subprojects/frida-core/server/frida-server
+        gzip build-android-arm64/subprojects/frida-core/server/frida-server
+        gzip build-android-x86/subprojects/frida-core/server/frida-server
+        gzip build-android-x86_64/subprojects/frida-core/server/frida-server
         
-        gzip build-android-arm/frida-core/inject/frida-inject
-        gzip build-android-arm64/frida-core/inject/frida-inject
-        gzip build-android-x86/frida-core/inject/frida-inject
-        gzip build-android-x86_64/frida-core/inject/frida-inject
+        gzip build-android-arm/subprojects/frida-core/inject/frida-inject
+        gzip build-android-arm64/subprojects/frida-core/inject/frida-inject
+        gzip build-android-x86/subprojects/frida-core/inject/frida-inject
+        gzip build-android-x86_64/subprojects/frida-core/inject/frida-inject
         
-        gzip build-android-arm/frida-core/lib/gadget/frida-gadget.so
-        gzip build-android-arm64/frida-core/lib/gadget/frida-gadget.so
-        gzip build-android-x86/frida-core/lib/gadget/frida-gadget.so
-        gzip build-android-x86_64/frida-core/lib/gadget/frida-gadget.so
+        gzip build-android-arm/subprojects/frida-core/lib/gadget/frida-gadget.so
+        gzip build-android-arm64/subprojects/frida-core/lib/gadget/frida-gadget.so
+        gzip build-android-x86/subprojects/frida-core/lib/gadget/frida-gadget.so
+        gzip build-android-x86_64/subprojects/frida-core/lib/gadget/frida-gadget.so
 
-        gzip build-android-arm/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
-        gzip build-android-arm64/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
-        gzip build-android-x86/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
-        gzip build-android-x86_64/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
+        gzip build-android-arm/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
+        gzip build-android-arm64/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
+        gzip build-android-x86/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
+        gzip build-android-x86_64/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a
         
 
     - name: Upload android arm frida-server for Florida
@@ -234,7 +232,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm/frida-core/server/frida-server.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm/subprojects/frida-core/server/frida-server.gz'
         asset_name: 'florida-server-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm.gz'
         asset_content_type: application/octet-stream
 
@@ -244,7 +242,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm64/frida-core/server/frida-server.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm64/subprojects/frida-core/server/frida-server.gz'
         asset_name: 'florida-server-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm64.gz'
         asset_content_type: application/octet-stream
 
@@ -254,7 +252,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86/frida-core/server/frida-server.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86/subprojects/frida-core/server/frida-server.gz'
         asset_name: 'florida-server-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86.gz'
         asset_content_type: application/octet-stream
 
@@ -264,7 +262,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86_64/frida-core/server/frida-server.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86_64/subprojects/frida-core/server/frida-server.gz'
         asset_name: 'florida-server-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86_64.gz'
         asset_content_type: application/octet-stream
         
@@ -274,7 +272,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm/frida-core/inject/frida-inject.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm/subprojects/frida-core/inject/frida-inject.gz'
         asset_name: 'florida-inject-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm.gz'
         asset_content_type: application/octet-stream
         
@@ -284,7 +282,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm64/frida-core/inject/frida-inject.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm64/subprojects/frida-core/inject/frida-inject.gz'
         asset_name: 'florida-inject-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm64.gz'
         asset_content_type: application/octet-stream
         
@@ -294,7 +292,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86/frida-core/inject/frida-inject.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86/subprojects/frida-core/inject/frida-inject.gz'
         asset_name: 'florida-inject-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86.gz'
         asset_content_type: application/octet-stream
         
@@ -304,7 +302,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86_64/frida-core/inject/frida-inject.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86_64/subprojects/frida-core/inject/frida-inject.gz'
         asset_name: 'florida-inject-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm-x86_64.gz'
         asset_content_type: application/octet-stream
     
@@ -314,7 +312,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm/frida-core/lib/gadget/frida-gadget.so.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm/subprojects/frida-core/lib/gadget/frida-gadget.so.gz'
         asset_name: 'florida-gadget-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm.so.gz'
         asset_content_type: application/octet-stream
 
@@ -324,7 +322,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm64/frida-core/lib/gadget/frida-gadget.so.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm64/subprojects/frida-core/lib/gadget/frida-gadget.so.gz'
         asset_name: 'florida-gadget-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm64.so.gz'
         asset_content_type: application/octet-stream
    
@@ -334,7 +332,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86/frida-core/lib/gadget/frida-gadget.so.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86/subprojects/frida-core/lib/gadget/frida-gadget.so.gz'
         asset_name: 'florida-gadget-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86.so.gz'
         asset_content_type: application/octet-stream
 
@@ -344,7 +342,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86_64/frida-core/lib/gadget/frida-gadget.so.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86_64/subprojects/frida-core/lib/gadget/frida-gadget.so.gz'
         asset_name: 'florida-gadget-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86_64.so.gz'
         asset_content_type: application/octet-stream
      
@@ -354,7 +352,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
         asset_name: 'florida-gumjs-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm.a.gz'
         asset_content_type: application/octet-stream
 
@@ -364,7 +362,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-arm64/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
+        asset_path: '${{ github.workspace }}/build-android-arm64/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
         asset_name: 'florida-gumjs-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-arm64.a.gz'
         asset_content_type: application/octet-stream
    
@@ -374,7 +372,7 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
         asset_name: 'florida-gumjs-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86.a.gz'
         asset_content_type: application/octet-stream
 
@@ -384,6 +382,6 @@ jobs:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
       with:
         upload_url: '${{ steps.checkReleaseVersion.outputs.upload_url }}'
-        asset_path: '${{ github.workspace }}/build-android-x86_64/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
+        asset_path: '${{ github.workspace }}/build-android-x86_64/subprojects/frida-gum/bindings/gumjs/libfrida-gumjs-1.0.a.gz'
         asset_name: 'florida-gumjs-${{ needs.check_version.outputs.FRIDA_VERSION }}-android-x86_64.a.gz'
         asset_content_type: application/octet-stream
